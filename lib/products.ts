@@ -287,6 +287,8 @@ export const products: Product[] = [
     brand: "Bose",
     category: "headphones",
     price: 429,
+    originalPrice: 499,
+    discount: 14,
     rating: 4.6,
     reviewCount: 1234,
     image: "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=400&h=400&fit=crop",
@@ -299,6 +301,7 @@ export const products: Product[] = [
       Connectivity: "Bluetooth 5.3",
     },
     inStock: true,
+    bestDeal: true,
   },
   {
     id: "h4",
