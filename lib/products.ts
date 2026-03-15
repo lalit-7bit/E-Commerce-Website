@@ -83,6 +83,7 @@ export const products: Product[] = [
       Battery: "5050mAh",
     },
     inStock: true,
+    featured: true,
   },
   {
     id: "m4",
