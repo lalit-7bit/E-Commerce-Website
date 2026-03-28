@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useCart } from "@/lib/cart-context";
+import { useAuth } from "@/lib/auth-context";
 import { categories } from "@/lib/products";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,8 +17,11 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
   Search,
   ShoppingCart,
-  User,
+  User as UserIcon,
   Menu,
+  LogOut,
+  LogIn,
+  UserPlus,
   Smartphone,
   Laptop,
   Tablet,
@@ -38,6 +42,7 @@ const categoryIcons: Record<string, React.ReactNode> = {
 
 export function Navbar() {
   const { totalItems } = useCart();
+  const { user, logout } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -97,10 +102,52 @@ export function Navbar() {
           {/* Right actions */}
           <div className="flex items-center gap-2">
             {/* User menu */}
-            <Button variant="ghost" size="icon" className="hidden md:flex">
-              <User className="h-5 w-5" />
-              <span className="sr-only">Account</span>
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="hidden md:flex">
+                  <UserIcon className="h-5 w-5" />
+                  <span className="sr-only">Account</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                {user ? (
+                  <>
+                    <div className="px-2 py-1.5">
+                      <p className="text-sm font-medium">{user.name}</p>
+                      <p className="text-xs text-muted-foreground">{user.email}</p>
+                    </div>
+                    <DropdownMenuItem asChild>
+                      <Link href="/account" className="flex items-center gap-2">
+                        <UserIcon className="h-4 w-4" />
+                        My Account
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => logout()}
+                      className="flex items-center gap-2 text-destructive focus:text-destructive"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      Sign Out
+                    </DropdownMenuItem>
+                  </>
+                ) : (
+                  <>
+                    <DropdownMenuItem asChild>
+                      <Link href="/login" className="flex items-center gap-2">
+                        <LogIn className="h-4 w-4" />
+                        Sign In
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/signup" className="flex items-center gap-2">
+                        <UserPlus className="h-4 w-4" />
+                        Create Account
+                      </Link>
+                    </DropdownMenuItem>
+                  </>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
 
             {/* Cart */}
             <Link href="/cart">
@@ -163,6 +210,54 @@ export function Navbar() {
                     >
                       All Products
                     </Link>
+                  </div>
+
+                  <div className="border-t pt-4">
+                    {user ? (
+                      <>
+                        <div className="px-3 py-2">
+                          <p className="text-sm font-medium">{user.name}</p>
+                          <p className="text-xs text-muted-foreground">{user.email}</p>
+                        </div>
+                        <Link
+                          href="/account"
+                          onClick={() => setMobileMenuOpen(false)}
+                          className="flex items-center gap-3 rounded-lg px-3 py-2 text-foreground hover:bg-muted"
+                        >
+                          <UserIcon className="h-4 w-4" />
+                          My Account
+                        </Link>
+                        <button
+                          onClick={() => {
+                            logout();
+                            setMobileMenuOpen(false);
+                          }}
+                          className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-destructive hover:bg-muted"
+                        >
+                          <LogOut className="h-4 w-4" />
+                          Sign Out
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <Link
+                          href="/login"
+                          onClick={() => setMobileMenuOpen(false)}
+                          className="flex items-center gap-3 rounded-lg px-3 py-2 text-foreground hover:bg-muted"
+                        >
+                          <LogIn className="h-4 w-4" />
+                          Sign In
+                        </Link>
+                        <Link
+                          href="/signup"
+                          onClick={() => setMobileMenuOpen(false)}
+                          className="flex items-center gap-3 rounded-lg px-3 py-2 text-foreground hover:bg-muted"
+                        >
+                          <UserPlus className="h-4 w-4" />
+                          Create Account
+                        </Link>
+                      </>
+                    )}
                   </div>
                 </nav>
               </SheetContent>

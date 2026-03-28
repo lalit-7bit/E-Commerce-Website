@@ -38,6 +38,14 @@ export interface CartState {
   totalPrice: number;
 }
 
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  password: string;
+}
+
 export type SortOption = "price-low" | "price-high" | "popularity" | "newest";
 
 export interface FilterState {
