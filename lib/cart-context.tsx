@@ -90,6 +90,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
     // User just logged in (transition from no user to a user)
     if (currentUserId && currentUserId !== previousUserId) {
+      // Prevent the sync effect from writing the stale/empty local cart to DB
+      // before fetchCartFromDb completes (both effects run in the same batch)
+      skipSyncRef.current = true;
       fetchCartFromDb(currentUserId).then((dbItems) => {
         if (!cancelled) {
           // Skip the next sync since we just fetched these items from DB
