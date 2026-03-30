@@ -1,11 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 
-const JWT_SECRET = process.env.JWT_SECRET || "electrostore-default-secret-change-in-production";
-
 export interface JwtPayload {
   userId: string;
   email: string;
+}
+
+/**
+ * Returns the JWT secret, throwing if not configured.
+ * Deferred to runtime so the module can be imported at build time.
+ */
+function getJwtSecret(): string {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error(
+      "Please define the JWT_SECRET environment variable inside .env.local"
+    );
+  }
+  return secret;
 }
 
 /**
@@ -13,7 +25,7 @@ export interface JwtPayload {
  * Token expires in 7 days.
  */
 export function signToken(payload: JwtPayload): string {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: "7d" });
+  return jwt.sign(payload, getJwtSecret(), { expiresIn: "7d" });
 }
 
 /**
@@ -22,7 +34,7 @@ export function signToken(payload: JwtPayload): string {
  */
 export function verifyToken(token: string): JwtPayload | null {
   try {
-    return jwt.verify(token, JWT_SECRET) as JwtPayload;
+    return jwt.verify(token, getJwtSecret()) as JwtPayload;
   } catch {
     return null;
   }

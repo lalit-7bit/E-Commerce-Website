@@ -71,14 +71,9 @@ export async function POST(request: NextRequest) {
 
     const userId = new mongoose.Types.ObjectId(auth.userId);
 
-    // If this address is set as default, unset any existing default
-    if (isDefault) {
-      await Address.updateMany(
-        { userId, isDefault: true },
-        { $set: { isDefault: false } }
-      );
-    }
-
+    // Create the new address first, then unset other defaults if needed.
+    // This ordering ensures the user always has a default address even if
+    // the updateMany call fails.
     const address = await Address.create({
       userId,
       fullAddress: fullAddress.trim(),
@@ -87,6 +82,14 @@ export async function POST(request: NextRequest) {
       country: country?.trim() || "India",
       isDefault: isDefault || false,
     });
+
+    // Unset other defaults only after the new address is successfully created
+    if (isDefault) {
+      await Address.updateMany(
+        { userId, isDefault: true, _id: { $ne: address._id } },
+        { $set: { isDefault: false } }
+      );
+    }
 
     return NextResponse.json(
       {
