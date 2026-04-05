@@ -6,7 +6,15 @@ const rootDir = path.resolve(import.meta.dirname, "..");
 
 export default defineConfig({
   root: path.resolve(rootDir, "client"),
+  envDir: rootDir,
   plugins: [react()],
+  define: {
+    __API_BASE_URL__: JSON.stringify(
+      process.env.VITE_API_BASE_URL ||
+        process.env.NEXT_PUBLIC_API_BASE_URL ||
+        ""
+    ),
+  },
   resolve: {
     alias: {
       "@": rootDir,

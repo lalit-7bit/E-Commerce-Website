@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { getApiUrl } from "@/lib/api";
 
 interface AddressRecord {
   id: string;
@@ -35,7 +36,7 @@ export default function AccountAddressesPage() {
     if (!user?.token) return;
 
     const loadAddresses = async () => {
-      const res = await fetch("/api/addresses", {
+      const res = await fetch(getApiUrl("/api/addresses"), {
         headers: { Authorization: `Bearer ${user.token}` },
       });
       const data = await res.json();
@@ -53,7 +54,7 @@ export default function AccountAddressesPage() {
 
     setIsSubmitting(true);
     try {
-      const res = await fetch("/api/addresses", {
+      const res = await fetch(getApiUrl("/api/addresses"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -77,7 +78,7 @@ export default function AccountAddressesPage() {
   const deleteAddress = async (id: string) => {
     if (!user?.token) return;
 
-    const res = await fetch(`/api/addresses/${id}`, {
+    const res = await fetch(getApiUrl(`/api/addresses/${id}`), {
       method: "DELETE",
       headers: { Authorization: `Bearer ${user.token}` },
     });

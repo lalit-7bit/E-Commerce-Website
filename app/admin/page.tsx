@@ -7,6 +7,7 @@ import { ProtectedPage } from "@/components/account/protected-page";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getApiUrl } from "@/lib/api";
 
 interface AdminMetrics {
   totalUsers: number;
@@ -38,7 +39,7 @@ export default function AdminPage() {
 
     const loadOverview = async () => {
       try {
-        const res = await fetch("/api/admin/overview", {
+        const res = await fetch(getApiUrl("/api/admin/overview"), {
           headers: { Authorization: `Bearer ${user.token}` },
         });
         const data = await res.json();
@@ -57,7 +58,7 @@ export default function AdminPage() {
   const updateStatus = async (orderId: string, status: AdminOrder["status"]) => {
     if (!user?.token) return;
 
-    const res = await fetch(`/api/admin/orders/${orderId}`, {
+    const res = await fetch(getApiUrl(`/api/admin/orders/${orderId}`), {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

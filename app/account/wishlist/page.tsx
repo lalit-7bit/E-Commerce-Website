@@ -7,6 +7,7 @@ import { AccountLayout } from "@/components/account/account-layout";
 import { ProtectedPage } from "@/components/account/protected-page";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getApiUrl } from "@/lib/api";
 import { getProductById } from "@/lib/products";
 
 interface WishlistProduct {
@@ -24,7 +25,7 @@ export default function AccountWishlistPage() {
     if (!user?.token) return;
 
     const loadWishlist = async () => {
-      const res = await fetch("/api/wishlist", {
+      const res = await fetch(getApiUrl("/api/wishlist"), {
         headers: { Authorization: `Bearer ${user.token}` },
       });
       const data = await res.json();
@@ -48,7 +49,7 @@ export default function AccountWishlistPage() {
   const removeProduct = async (productId: string) => {
     if (!user?.token) return;
 
-    const res = await fetch(`/api/wishlist/remove/${productId}`, {
+    const res = await fetch(getApiUrl(`/api/wishlist/remove/${productId}`), {
       method: "DELETE",
       headers: { Authorization: `Bearer ${user.token}` },
     });

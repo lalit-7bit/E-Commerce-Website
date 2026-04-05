@@ -56,6 +56,7 @@ MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_long_random_secret
 ADMIN_EMAILS=your_email@example.com
 CLIENT_URL=http://localhost:5173
+VITE_API_BASE_URL=http://localhost:5000
 PORT=5000
 ```
 
@@ -103,3 +104,22 @@ npm run dev:mern
 - MongoDB is used for schema design and CRUD operations
 - JWT, bcrypt, and admin/customer role separation are implemented
 - The legacy Next.js app remains only as a fallback while the MERN path is being finalized
+
+## Deployment
+
+Recommended split deployment:
+
+1. Backend on Render
+   - The repo includes `render.yaml`
+   - Set:
+     - `MONGO_URI`
+     - `JWT_SECRET`
+     - `ADMIN_EMAILS`
+     - `CLIENT_URL`
+
+2. Frontend on Vercel
+   - The repo includes `vercel.json`
+   - Set:
+     - `VITE_API_BASE_URL=https://your-render-backend-url.onrender.com`
+
+After deploying the backend, redeploy the frontend with the correct `VITE_API_BASE_URL`.

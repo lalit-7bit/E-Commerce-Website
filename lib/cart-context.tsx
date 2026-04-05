@@ -4,6 +4,7 @@ import { createContext, useContext, useState, useCallback, useEffect, useRef, ty
 import type { Product, CartItem, CartState } from "./types";
 import { useAuth } from "./auth-context";
 import { getProductById } from "./products";
+import { getApiUrl } from "./api";
 
 interface CartContextType extends CartState {
   addToCart: (product: Product, quantity?: number) => void;
@@ -32,7 +33,7 @@ function calculateTotals(items: CartItem[]): { totalItems: number; totalPrice: n
  */
 async function syncCartToDb(token: string, items: CartItem[]) {
   try {
-    await fetch("/api/cart", {
+    await fetch(getApiUrl("/api/cart"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -57,7 +58,7 @@ async function syncCartToDb(token: string, items: CartItem[]) {
  */
 async function fetchCartFromDb(token: string): Promise<CartItem[]> {
   try {
-    const res = await fetch("/api/cart", {
+    const res = await fetch(getApiUrl("/api/cart"), {
       headers: { Authorization: `Bearer ${token}` },
     });
     if (!res.ok) return [];
