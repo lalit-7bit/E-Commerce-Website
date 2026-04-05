@@ -29,6 +29,7 @@ import {
   Gamepad2,
   Cable,
   ChevronDown,
+  LayoutDashboard,
 } from "lucide-react";
 
 const categoryIcons: Record<string, React.ReactNode> = {
@@ -122,6 +123,14 @@ export function Navbar() {
                         My Account
                       </Link>
                     </DropdownMenuItem>
+                    {user.role === "admin" && (
+                      <DropdownMenuItem asChild>
+                        <Link href="/admin" className="flex items-center gap-2">
+                          <LayoutDashboard className="h-4 w-4" />
+                          Admin Panel
+                        </Link>
+                      </DropdownMenuItem>
+                    )}
                     <DropdownMenuItem
                       onClick={() => logout()}
                       className="flex items-center gap-2 text-destructive focus:text-destructive"
@@ -227,6 +236,16 @@ export function Navbar() {
                           <UserIcon className="h-4 w-4" />
                           My Account
                         </Link>
+                        {user.role === "admin" && (
+                          <Link
+                            href="/admin"
+                            onClick={() => setMobileMenuOpen(false)}
+                            className="flex items-center gap-3 rounded-lg px-3 py-2 text-foreground hover:bg-muted"
+                          >
+                            <LayoutDashboard className="h-4 w-4" />
+                            Admin Panel
+                          </Link>
+                        )}
                         <button
                           onClick={() => {
                             logout();

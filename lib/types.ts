@@ -43,6 +43,7 @@ export interface User {
   name: string;
   email: string;
   phone?: string;
+  role: "customer" | "admin";
   password: string;
 }
 

@@ -9,6 +9,7 @@ export interface IUser extends Document {
   name: string;
   email: string;
   phone?: string;
+  role: "customer" | "admin";
   password: string; // bcrypt-hashed password
   createdAt: Date;
   updatedAt: Date;
@@ -31,6 +32,11 @@ const UserSchema = new Schema<IUser>(
     phone: {
       type: String,
       trim: true,
+    },
+    role: {
+      type: String,
+      enum: ["customer", "admin"],
+      default: "customer",
     },
     password: {
       type: String,

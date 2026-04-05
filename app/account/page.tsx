@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
+import { AccountLayout } from "@/components/account/account-layout";
+import { ProtectedPage } from "@/components/account/protected-page";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,31 +14,21 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { User, LogOut, Package, Heart, MapPin } from "lucide-react";
 
 export default function AccountPage() {
-  const router = useRouter();
-  const { user, logout, updateProfile, isLoading } = useAuth();
+  const { user, updateProfile } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(user?.name || "");
   const [phone, setPhone] = useState(user?.phone || "");
   const [saved, setSaved] = useState(false);
 
-  if (isLoading) {
-    return (
-      <div className="flex min-h-[80vh] items-center justify-center">
-        <p className="text-muted-foreground">Loading...</p>
-      </div>
-    );
-  }
-
-  if (!user) {
-    router.push("/login");
-    return null;
-  }
+  useEffect(() => {
+    setName(user?.name || "");
+    setPhone(user?.phone || "");
+  }, [user?.name, user?.phone]);
 
   const handleSave = async () => {
+    if (!user) return;
     if (!name.trim()) return;
     const result = await updateProfile({ name: name.trim(), phone: phone || undefined });
     if (result?.success) {
@@ -47,75 +38,12 @@ export default function AccountPage() {
     }
   };
 
-  const handleLogout = () => {
-    logout();
-    router.push("/");
-  };
-
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8">
-      <h1 className="mb-8 text-3xl font-bold">My Account</h1>
-
-      <div className="grid gap-6 md:grid-cols-3">
-        {/* Sidebar */}
-        <div className="space-y-2">
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary">
-                  <User className="h-6 w-6 text-primary-foreground" />
-                </div>
-                <div>
-                  <p className="font-semibold">{user.name}</p>
-                  <p className="text-sm text-muted-foreground">{user.email}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <nav className="space-y-1">
-            <Button
-              variant="ghost"
-              className="w-full justify-start gap-2"
-            >
-              <User className="h-4 w-4" />
-              Profile
-            </Button>
-            <Button
-              variant="ghost"
-              className="w-full justify-start gap-2"
-            >
-              <Package className="h-4 w-4" />
-              Orders
-            </Button>
-            <Button
-              variant="ghost"
-              className="w-full justify-start gap-2"
-            >
-              <Heart className="h-4 w-4" />
-              Wishlist
-            </Button>
-            <Button
-              variant="ghost"
-              className="w-full justify-start gap-2"
-            >
-              <MapPin className="h-4 w-4" />
-              Addresses
-            </Button>
-            <Separator />
-            <Button
-              variant="ghost"
-              className="w-full justify-start gap-2 text-destructive hover:text-destructive"
-              onClick={handleLogout}
-            >
-              <LogOut className="h-4 w-4" />
-              Sign Out
-            </Button>
-          </nav>
-        </div>
-
-        {/* Main content */}
-        <div className="md:col-span-2">
+    <ProtectedPage>
+      <AccountLayout
+        title="My Account"
+        description="Manage your profile details and account preferences."
+      >
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
@@ -130,8 +58,8 @@ export default function AccountPage() {
                     variant="outline"
                     size="sm"
                     onClick={() => {
-                      setName(user.name);
-                      setPhone(user.phone || "");
+                      setName(user?.name || "");
+                      setPhone(user?.phone || "");
                       setIsEditing(true);
                     }}
                   >
@@ -156,7 +84,7 @@ export default function AccountPage() {
                   />
                 ) : (
                   <p className="rounded-md bg-muted px-3 py-2 text-sm">
-                    {user.name}
+                    {user?.name}
                   </p>
                 )}
               </div>
@@ -164,7 +92,7 @@ export default function AccountPage() {
               <div className="space-y-2">
                 <Label>Email Address</Label>
                 <p className="rounded-md bg-muted px-3 py-2 text-sm">
-                  {user.email}
+                  {user?.email}
                 </p>
               </div>
 
@@ -178,7 +106,7 @@ export default function AccountPage() {
                   />
                 ) : (
                   <p className="rounded-md bg-muted px-3 py-2 text-sm">
-                    {user.phone || "Not provided"}
+                    {user?.phone || "Not provided"}
                   </p>
                 )}
               </div>
@@ -196,8 +124,7 @@ export default function AccountPage() {
               )}
             </CardContent>
           </Card>
-        </div>
-      </div>
-    </div>
+      </AccountLayout>
+    </ProtectedPage>
   );
 }

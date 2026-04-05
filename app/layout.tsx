@@ -1,13 +1,10 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { CartProvider } from '@/lib/cart-context'
 import { AuthProvider } from '@/lib/auth-context'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
 import './globals.css'
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: 'ElectroStore - Premium Electronics & Gadgets',
@@ -39,7 +36,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased`}>
+      <body className="antialiased">
         <AuthProvider>
           <CartProvider>
             <div className="flex min-h-screen flex-col">

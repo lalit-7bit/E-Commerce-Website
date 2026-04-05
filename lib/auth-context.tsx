@@ -11,6 +11,7 @@ interface AuthUser {
   name: string;
   email: string;
   phone?: string;
+  role: "customer" | "admin";
   token: string;
 }
 

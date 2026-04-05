@@ -12,6 +12,7 @@ import { signToken } from "@/lib/auth-middleware";
 export async function POST(request: NextRequest) {
   try {
     const { name, email, password, phone } = await request.json();
+    const normalizedEmail = email?.toLowerCase();
 
     // Validate required fields
     if (!name || !email || !password) {
@@ -33,7 +34,7 @@ export async function POST(request: NextRequest) {
 
     // Check if a user with this email already exists
     const existingUser = await User.findOne({
-      email: email.toLowerCase(),
+      email: normalizedEmail,
     });
 
     if (existingUser) {
@@ -43,14 +44,20 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const adminEmails = (process.env.ADMIN_EMAILS || "")
+      .split(",")
+      .map((value) => value.trim().toLowerCase())
+      .filter(Boolean);
+
     // Hash the password with bcrypt (10 salt rounds)
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create the new user in the database
     const newUser = await User.create({
       name,
-      email: email.toLowerCase(),
+      email: normalizedEmail,
       phone: phone || undefined,
+      role: adminEmails.includes(normalizedEmail) ? "admin" : "customer",
       password: hashedPassword,
     });
 
@@ -58,6 +65,7 @@ export async function POST(request: NextRequest) {
     const token = signToken({
       userId: newUser._id.toString(),
       email: newUser.email,
+      role: newUser.role,
     });
 
     // Return user data without the password, plus token
@@ -69,6 +77,7 @@ export async function POST(request: NextRequest) {
           name: newUser.name,
           email: newUser.email,
           phone: newUser.phone,
+          role: newUser.role,
         },
       },
       { status: 201 }
