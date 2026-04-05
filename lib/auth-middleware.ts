@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 export interface JwtPayload {
   userId: string;
   email: string;
+  role: "customer" | "admin";
 }
 
 /**
@@ -77,6 +78,24 @@ export function authenticateRequest(
   }
 
   return payload;
+}
+
+export function authorizeRole(
+  result: JwtPayload | NextResponse,
+  allowedRoles: JwtPayload["role"][]
+): JwtPayload | NextResponse {
+  if (isAuthError(result)) {
+    return result;
+  }
+
+  if (!allowedRoles.includes(result.role)) {
+    return NextResponse.json(
+      { error: "You do not have permission to perform this action." },
+      { status: 403 }
+    );
+  }
+
+  return result;
 }
 
 /**

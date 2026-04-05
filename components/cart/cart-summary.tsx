@@ -98,8 +98,8 @@ export function CartSummary() {
       )}
 
       {/* Checkout button */}
-      <Button size="lg" className="mt-6 w-full">
-        Proceed to Checkout
+      <Button size="lg" className="mt-6 w-full" asChild>
+        <Link href="/checkout">Proceed to Checkout</Link>
       </Button>
 
       {/* Trust badges */}
