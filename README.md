@@ -6,8 +6,6 @@ ElectroStore is a full-stack electronics storefront prepared for a university ME
 - `server/`: Node.js + Express REST APIs
 - `MongoDB`: Mongoose models for users, carts, orders, addresses, and wishlists
 
-The earlier Next.js code is still present in the repo as a backup/reference, but the submission-oriented path is the new MERN structure above.
-
 ## Features
 
 - React component-based customer and admin UI
