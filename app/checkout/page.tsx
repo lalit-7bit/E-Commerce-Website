@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { getApiUrl } from "@/lib/api";
 
 interface AddressOption {
   id: string;
@@ -41,7 +42,7 @@ export default function CheckoutPage() {
     if (!user?.token) return;
 
     const loadAddresses = async () => {
-      const res = await fetch("/api/addresses", {
+      const res = await fetch(getApiUrl("/api/addresses"), {
         headers: { Authorization: `Bearer ${user.token}` },
       });
       const data = await res.json();
@@ -97,7 +98,7 @@ export default function CheckoutPage() {
 
     try {
       if (saveAddress && !selectedAddressId) {
-        const saveRes = await fetch("/api/addresses", {
+        const saveRes = await fetch(getApiUrl("/api/addresses"), {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -115,7 +116,7 @@ export default function CheckoutPage() {
         }
       }
 
-      const res = await fetch("/api/orders/checkout", {
+      const res = await fetch(getApiUrl("/api/orders/checkout"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

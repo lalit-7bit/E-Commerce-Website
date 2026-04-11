@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react";
+import { getApiUrl } from "./api";
 
 /**
  * User type returned from the API (no password field).
@@ -72,7 +73,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
    */
   const login = useCallback(async (email: string, password: string) => {
     try {
-      const res = await fetch("/api/auth/login", {
+      const res = await fetch(getApiUrl("/api/auth/login"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -100,7 +101,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signup = useCallback(
     async (name: string, email: string, password: string, phone?: string) => {
       try {
-        const res = await fetch("/api/auth/signup", {
+        const res = await fetch(getApiUrl("/api/auth/signup"), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ name, email, password, phone }),
@@ -138,7 +139,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     async (updates: { name?: string; phone?: string }) => {
       if (!user) return { success: false, error: "Not logged in" };
       try {
-        const res = await fetch("/api/auth/profile", {
+        const res = await fetch(getApiUrl("/api/auth/profile"), {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",

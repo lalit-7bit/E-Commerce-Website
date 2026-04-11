@@ -6,6 +6,7 @@ import { AccountLayout } from "@/components/account/account-layout";
 import { ProtectedPage } from "@/components/account/protected-page";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getApiUrl } from "@/lib/api";
 
 interface OrderRecord {
   id: string;
@@ -31,7 +32,7 @@ export default function AccountOrdersPage() {
 
     const loadOrders = async () => {
       try {
-        const res = await fetch("/api/orders", {
+        const res = await fetch(getApiUrl("/api/orders"), {
           headers: { Authorization: `Bearer ${user.token}` },
         });
         const data = await res.json();
