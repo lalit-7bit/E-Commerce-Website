@@ -1,6 +1,7 @@
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
+import fs from "node:fs";
 import path from "node:path";
 import authRoutes from "./routes/auth";
 import cartRoutes from "./routes/cart";
@@ -9,7 +10,10 @@ import wishlistRoutes from "./routes/wishlist";
 import orderRoutes from "./routes/orders";
 import adminRoutes from "./routes/admin";
 
-dotenv.config();
+const envFilePath = path.resolve(process.cwd(), ".env");
+if (fs.existsSync(envFilePath)) {
+  dotenv.config({ path: envFilePath });
+}
 
 const app = express();
 const port = Number(process.env.PORT || 5000);
@@ -17,7 +21,7 @@ const configuredOrigins = (process.env.CLIENT_URL || "")
   .split(",")
   .map((value) => value.trim())
   .filter(Boolean);
-const clientDistPath = path.resolve(import.meta.dirname, "..", "..", "client", "dist");
+const clientDistPath = path.resolve(process.cwd(), "client", "dist");
 
 const allowedOrigins = new Set([
   "http://localhost:5173",
